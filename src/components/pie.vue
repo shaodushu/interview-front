@@ -16,7 +16,7 @@
  */
 import echarts from "echarts";
 export default {
-  name: "chart",
+  name: "pie",
   data() {
     return {
       chart: null
@@ -26,64 +26,40 @@ export default {
     createChat(chat) {
       chat.setOption({
         tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        xAxis: {
-          type: "category",
-          data: []
-        },
-        yAxis: {
-          type: "value"
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)"
         },
         series: [
           {
-            type: "line",
-            data: []
+            type: "pie",
+            data: [],
+            roseType: "radius",
+            animationType: "scale",
+            animationEasing: "elasticOut",
+            animationDelay: function(idx) {
+              return Math.random() * 200;
+            }
           }
         ]
       });
     },
-    setChatData(chat, name, xAxisData, seriesData, color, type) {
+    setChatData(chat, name, seriesData) {
       chat.setOption({
-        tooltip: {
-          trigger: "axis"
-        },
-        color: [color],
-        xAxis: {
-          data: xAxisData,
-          name: "x"
-        },
-        yAxis: {
-          type: "log",
-          name: "y"
-        },
         series: [
           {
             name: name,
             data: seriesData,
-            type: type
           }
         ]
       });
     },
     update() {
-      let XData = this.$props.XData;
       let seriesData = this.$props.seriesData;
       let des = this.$props.des;
-      let color = this.$props.color;
-      let type = this.$props.type;
-      this.setChatData(this.chart, des, XData, seriesData, color, type);
+      this.setChatData(this.chart, des, seriesData);
     }
   },
   props: {
-    XData: {
-      type: Array,
-      default: []
-    },
     seriesData: {
       type: Array,
       default: []
@@ -91,17 +67,9 @@ export default {
     des: {
       type: String
     },
-    color: {
-      type: String,
-      default: "#19be6b"
-    },
-    type: {
-      type: String,
-      default: "line"
-    }
   },
   watch: {
-    XData(data) {
+    seriesData(data) {
       this.update(this.chart);
     }
   },

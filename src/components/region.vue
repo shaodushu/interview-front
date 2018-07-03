@@ -16,7 +16,7 @@
  */
 import echarts from "echarts";
 export default {
-  name: "chart",
+  name: "region",
   data() {
     return {
       chart: null
@@ -28,55 +28,39 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: {
-            // 坐标轴指示器，坐标轴触发有效
-            type: "shadow" // 默认为直线，可选为：'line' | 'shadow'
+            type: "cross",
+            label: {
+              backgroundColor: "#6a7985"
+            }
           }
         },
         xAxis: {
           type: "category",
-          data: []
-        },
-        yAxis: {
-          type: "value"
-        },
-        series: [
-          {
-            type: "line",
-            data: []
-          }
-        ]
-      });
-    },
-    setChatData(chat, name, xAxisData, seriesData, color, type) {
-      chat.setOption({
-        tooltip: {
-          trigger: "axis"
-        },
-        color: [color],
-        xAxis: {
-          data: xAxisData,
+          boundaryGap: false,
+          data: [],
           name: "x"
         },
         yAxis: {
-          type: "log",
-          name: "y"
+          type: "value",
+          name: "y",
+          type: "log"
         },
-        series: [
-          {
-            name: name,
-            data: seriesData,
-            type: type
-          }
-        ]
+        series: []
+      });
+    },
+    setChatData(chat, name, xAxisData, seriesData) {
+      chat.setOption({
+        xAxis: {
+          data: xAxisData
+        },
+        series: seriesData
       });
     },
     update() {
       let XData = this.$props.XData;
       let seriesData = this.$props.seriesData;
       let des = this.$props.des;
-      let color = this.$props.color;
-      let type = this.$props.type;
-      this.setChatData(this.chart, des, XData, seriesData, color, type);
+      this.setChatData(this.chart, des, XData, seriesData);
     }
   },
   props: {
@@ -90,14 +74,6 @@ export default {
     },
     des: {
       type: String
-    },
-    color: {
-      type: String,
-      default: "#19be6b"
-    },
-    type: {
-      type: String,
-      default: "line"
     }
   },
   watch: {
